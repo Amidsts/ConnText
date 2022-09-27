@@ -1,12 +1,13 @@
 import { string } from "joi"
-import { Schema, model, Types } from "mongoose"
+import { Schema, model, Types, Document } from "mongoose"
 
-interface IUser {
+interface IUser extends Document {
     isAdmin: boolean,
     username: string,
     password: string,
     email: string,
     phoneNo: string,
+    status: "active" | "inactive" | "suspended",
     address: {
         country: string,
         state: string,
@@ -21,7 +22,8 @@ interface IUser {
         type: Types.ObjectId,
         ref: string
     }[],
-    profilePicture: string 
+    profilePicture: string ,
+    isOnline: boolean
 }
 
 const userSchema = new Schema({
@@ -47,6 +49,11 @@ const userSchema = new Schema({
         type: string,
         required: true
     },
+    status: {
+        type: String,
+        enum: ["active", "inactive", "suspended"],
+        default: "inactive"
+    },
     profilePicture: {
         imageUrl: String,
         imageId: String
@@ -65,6 +72,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "users"
     }],
+    isOnline: {
+        type: Boolean,
+        default: false
+    }
 }, {timestamps: true} )
 
 const User = model<IUser>("user", userSchema)

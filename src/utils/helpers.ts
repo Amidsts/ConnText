@@ -31,3 +31,11 @@ export function comparePassword (hashedPassword: string, plainPassword: string) 
 export function generateToken (payload: {[key: string]: any}) {
   jwt.sign(payload, JWTSECRET, {expiresIn: 60*60*20})
 }
+
+interface tokenPayload {
+  id?:string
+}
+export function verifyToken (authToken: string) {
+  const token = authToken.split(" ")[1]
+  return jwt.verify(token, JWTSECRET) as tokenPayload
+}

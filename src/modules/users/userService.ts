@@ -4,8 +4,8 @@ import {
 } from "../../utils/helpers"
 
 import {
-    createUserRepository,
-    findUserRepository
+    createUser,
+    findUser
 } from "./usersRepository"
 import {
     createUserValidator, loginUserValidator
@@ -24,11 +24,12 @@ export async function createUserService(payload: {[key: string]: any}) {
             }
         } = createUserValidator(payload)
 
-        await createUserRepository(
+        await createUser(
             {
                 username, email,
                 password: hashPassword(password), 
                 phoneNo,
+                status: "active",
                 address: {
                     country,
                     state,
@@ -47,7 +48,7 @@ export async function createUserService(payload: {[key: string]: any}) {
 export async function loginUserService (payload: {[key: string]: any}) {
     try{
         const {email, password} = loginUserValidator(payload)
-        let User = await findUserRepository({email})
+        let User = await findUser({email})
 
         if (!User || !comparePassword(password, User.password) ) {
             throw new clientError("invalid email or password", 400)
@@ -62,7 +63,10 @@ export async function loginUserService (payload: {[key: string]: any}) {
         return err
     }
 }
-
-export async function logoutUserService () {
-    
-}
+//forgot password
+//reset password
+//change password
+//resend password verification code
+//online offline status of user using socket.io
+//create post
+//get profile
