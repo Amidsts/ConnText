@@ -1,9 +1,14 @@
+import { clientError } from "../../utils/error"
+import {
+    hashPassword, comparePassword, generateToken
+} from "../../utils/helpers"
+
 import {
     createUserRepository,
     findUserRepository
 } from "./usersRepository"
 import {
-    createUserValidator
+    createUserValidator, loginUserValidator
 } from "./uservalidation"
 
 export async function createUserService(payload: {[key: string]: any}) {
@@ -22,7 +27,8 @@ export async function createUserService(payload: {[key: string]: any}) {
         await createUserRepository(
             {
                 username, email,
-                password, phoneNo,
+                password: hashPassword(password), 
+                phoneNo,
                 address: {
                     country,
                     state,
@@ -36,5 +42,27 @@ export async function createUserService(payload: {[key: string]: any}) {
     } catch (err) {
         return err
     }
+}
 
+export async function loginUserService (payload: {[key: string]: any}) {
+    try{
+        const {email, password} = loginUserValidator(payload)
+        let User = await findUserRepository({email})
+
+        if (!User || !comparePassword(password, User.password) ) {
+            throw new clientError("invalid email or password", 400)
+        }
+
+        const token = generateToken({id: User._id})
+        return {
+            accessToken : token,
+            User
+        }
+    } catch (err) {
+        return err
+    }
+}
+
+export async function logoutUserService () {
+    
 }

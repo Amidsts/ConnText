@@ -4,3 +4,4 @@ dotenv.config()
 let {env} = process
 
 export const PORT = env.port || 4000
+export const JWTSECRET = env.jwtsecret || ""

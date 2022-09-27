@@ -19,3 +19,12 @@ export const createUserValidator = (payload: {[key: string]: any}) => {
     })
     , payload )
 }
+
+export const loginUserValidator = (payload: {[key: string]: any}) => {
+    return validator( Joi.object({
+        
+        email: Joi.string().trim().required(),
+        password: Joi.string().pattern(/^[A-Za-z0-9]{5, 10}$/).required() //alphanumeric password, min 5 & max 10
+    })
+    , payload )
+}
