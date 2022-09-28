@@ -1,5 +1,5 @@
 // import { logger } from "./logger";
-import {Application, Request, Response} from "express"
+import express,{Application, Request, Response} from "express"
 import cors from "cors"
 import morgan from "morgan";
 import helmet from "helmet";
@@ -9,7 +9,9 @@ import helmet from "helmet";
 export default (app: Application ) => {
     // mongoose.connect()
 
-    app.use(cors())
+    app.use(express.json())
+        .use(express.urlencoded({extended: true}))
+        .use(cors())
         .use(morgan("tiny"))
         .use(helmet())
         
