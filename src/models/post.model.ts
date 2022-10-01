@@ -1,8 +1,11 @@
-import { required } from "joi";
+
 import { Document, model, Types, Schema } from "mongoose";
 
-interface IPost extends Document {
-    userId: Types.ObjectId,
+interface IPost{
+    userId: {
+        type: Types.ObjectId,
+        ref: string
+    },
     postImages?: {
         imgUrl: string,
         imgId: string
@@ -11,11 +14,17 @@ interface IPost extends Document {
     likes?: {
         likesCount: number,
         likedBy: {
-            userId: string
+            userId: {
+                type: Types.ObjectId,
+                ref: string
+            }
         }[]
     },
     comments?: {
-        userId: Types.ObjectId,
+        userId:  {
+            type: Types.ObjectId,
+            ref: string
+        },
         comment: string
     }[]
 }
@@ -23,7 +32,7 @@ interface IPost extends Document {
 const postSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: "users"
+        ref: 'users'
     },
     postImages: [{
         imgUrl: String,
@@ -41,7 +50,7 @@ const postSchema = new Schema({
         likedBy: [
             {
                 userId: Schema.Types.ObjectId,
-                ref: "users",
+                ref: 'users',
                 required: true
             }
         ]

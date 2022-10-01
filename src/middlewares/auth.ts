@@ -3,7 +3,7 @@ import { findUser} from "../modules/users/usersRepository";
 import { clientError } from "../utils/error";
 import { verifyToken } from "../utils/helpers";
 
-export async function validateUser (req: Request, res:Response, next: NextFunction) {
+export async function validateUser (req: Request, _res:Response, next: NextFunction) {
 
     const {authorization} = req.headers
 

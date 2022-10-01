@@ -1,7 +1,7 @@
 import { string } from "joi"
 import { Schema, model, Types, Document } from "mongoose"
 
-interface IUser extends Document {
+export interface IUser extends Document {
     isAdmin: boolean,
     username: string,
     password: string,
@@ -32,21 +32,21 @@ const userSchema = new Schema({
         default: false
     },
     username: {
-        type: string,
+        type: String,
         required: true,
         unique: true
     },
     email: {
-        type: string,
+        type: String,
         required: true,
         unique: true
     },
     password: {
-        type: string,
+        type: String,
         required: true
     },
     phoneNo: {
-        type: string,
+        type: String,
         required: true
     },
     status: {

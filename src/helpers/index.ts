@@ -3,11 +3,28 @@ import express,{Application, Request, Response} from "express"
 import cors from "cors"
 import morgan from "morgan";
 import helmet from "helmet";
-// import mongoose from "mongoose"
+import {connect, ConnectOptions} from "mongoose"
 
+import {
+    cloudinary
+} from "../utils/helpers"
+import usersRoute from "../modules/users/userRoutes"
+import { MONGO_URI } from "../utils/env"; 
+import { logger } from "./logger";
+
+const options = {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+} as ConnectOptions
 
 export default (app: Application ) => {
-    // mongoose.connect()
+    connect(MONGO_URI, options).then( () => {
+        logger.info("connected to the database successfully")
+    }).catch((err) => {
+        logger.info(err)
+    })
+
+    app.use("*", cloudinary)
 
     app.use(express.json())
         .use(express.urlencoded({extended: true}))
@@ -15,9 +32,10 @@ export default (app: Application ) => {
         .use(morgan("tiny"))
         .use(helmet())
         
-    app.get("/age",  (req: Request, res: Response) => {
-        res.status(200).send("Hello world wide")
+    app.get("/",  (req: Request, res: Response) => {
+        res.status(200).send("Hello world, here is a social medial chat application")
     })
+    app.use("/v1/users", usersRoute)
 }
 
 

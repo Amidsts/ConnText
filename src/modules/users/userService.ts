@@ -4,7 +4,6 @@ import {
 } from "../../utils/helpers"
 
 import {
-    createPost,
     createUser,
     findUser
 } from "./usersRepository"
@@ -72,13 +71,14 @@ export async function loginUserService (payload: {[key: string]: any}) {
 //online offline status of user using socket.io
 
 //create post
-export async function createPostService ( userId: string, payload: {[key: string]: any}, images?: {imgUrl: string, imgId: string}[]){
-    try {
-        const {description} = createPostValidate(payload)
+// export async function createPostService ( userId: string, payload: {[key: string]: any}, images?: {imgUrl: string, imgId: string}[]){
+//     try {
+        
+//         const {description} = createPostValidate(payload)
 
-    await createPost(userId, description, images)
-    } catch (err) {
-        return err
-    }
-}
+//     await createPost(userId, description, images)
+//     } catch (err) {
+//         return err
+//     }
+// }
 //get profile[]

@@ -1,8 +1,14 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import { JWTSECRET } from "./env"
-
+import {v2} from "cloudinary"
+import { 
+  JWTSECRET,
+  CLOUD_NAME,
+  CLOUD_SECRET,
+  CLOUD_KEY 
+ } from "./env"
 import { clientError } from "./error"
+import { Request, Response, NextFunction } from "express"
 
 export const responsehandler = (payload: any, message = "success") => {
     return {
@@ -39,3 +45,15 @@ export function verifyToken (authToken: string) {
   const token = authToken.split(" ")[1]
   return jwt.verify(token, JWTSECRET) as tokenPayload
 }
+
+export function cloudinary (_req:Request, _res: Response, next:NextFunction) {
+  v2.config({
+    cloud_name: CLOUD_NAME,
+    cloud_secret: CLOUD_SECRET,
+    cloud_key: CLOUD_KEY,
+    secure: true
+  })
+
+  return next()
+}
+

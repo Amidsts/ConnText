@@ -1,9 +1,10 @@
-import { Router, Request, Response } from "express";
+import { Request, Response } from "express";
 
 import { responsehandler } from "../../utils/helpers";
-import { createPostService, createUserService, loginUserService } from "./userService";
+import { createUserService, loginUserService } from "./userService";
+import { upload } from "../../middlewares/custom";
+import { IRequest } from "../../helpers/custom.types";
 
-const router = Router()
 
 export async function createUserController(req: Request, res:Response) {
     try{
@@ -26,12 +27,10 @@ export async function loginUserController(req: Request, res:Response) {
 }
 
 //post
-export async function createPostController(req: Request, res:Response) {
-    try{
-        const response =await createPostService(req.user._id, req.body, )
-    } catch (err) {
-        return err
-    }
-}
-
-export default router
+// export async function createPostController(req: IRequest, res:Response) {
+//     try{
+//         const response =await createPostService(req.user?._id, req.body, res.locals.imageArr)
+//     } catch (err) {
+//         return err
+//     }
+// }
