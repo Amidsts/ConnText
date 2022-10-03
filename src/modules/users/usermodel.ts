@@ -11,7 +11,7 @@ export interface IUser extends Document {
     address: {
         country: string,
         state: string,
-        loaclGovt: string,
+        loacalGovt: string,
         postalcode: string 
     },
     followers: {
@@ -61,7 +61,7 @@ const userSchema = new Schema({
     address: {
         country: String,
         state: String,
-        loaclGovt: String,
+        localGovt: String,
         postalcode: String 
     },
     followers: [{

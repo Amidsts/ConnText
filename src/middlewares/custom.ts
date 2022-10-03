@@ -2,11 +2,12 @@ import multer from "multer"
 import { Request, Response, NextFunction } from "express"
 import { v2 } from "cloudinary" 
 import fs from "fs"
+import { IRequest } from "../helpers/custom.types"
 
 
  const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-       cb(null, "../uploads")
+       cb(null, "../uploads/")
     }
 } )
 
@@ -27,16 +28,8 @@ export const upload = multer({
 })
 
 
-interface IRequest extends Request{
-    imageData?: {
-        imgUrl: string,
-        imgId: string
-    }[]
-}
-
-
 export async function cloudinaryUpload (req: IRequest, res: Response, next: NextFunction) {
-
+    console.log("cloudinary");
     const imageData =[]
     const files = req.files
     
@@ -55,7 +48,8 @@ export async function cloudinaryUpload (req: IRequest, res: Response, next: Next
 
         fs.unlinkSync(imgFile.path) //delete file from its folder
     }
-
+ console.log("cloudinary");
+ 
     res.locals.imageArr = req.imageData
 
     return next()

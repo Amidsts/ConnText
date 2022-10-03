@@ -2,8 +2,8 @@ import { clientError } from "../../utils/error"
 import {
     hashPassword, comparePassword, generateToken
 } from "../../utils/helpers"
-
 import {
+    createPost,
     createUser,
     findUser
 } from "./usersRepository"
@@ -51,11 +51,13 @@ export async function loginUserService (payload: {[key: string]: any}) {
         const {email, password} = loginUserValidator(payload)
         let User = await findUser({email})
 
-        if (!User || !comparePassword(password, User.password) ) {
+       
+        if (!User || !( comparePassword( User.password, password ) )) {
+
             throw new clientError("invalid email or password", 400)
         }
-
         const token = generateToken({id: User._id})
+        
         return {
             accessToken : token,
             User
@@ -71,14 +73,14 @@ export async function loginUserService (payload: {[key: string]: any}) {
 //online offline status of user using socket.io
 
 //create post
-// export async function createPostService ( userId: string, payload: {[key: string]: any}, images?: {imgUrl: string, imgId: string}[]){
-//     try {
+export async function createPostService ( userId: string, payload: {[key: string]: any}, images?: {imgUrl: string, imgId: string}[]){
+    try {
         
-//         const {description} = createPostValidate(payload)
+        const {description} = createPostValidate(payload)
 
-//     await createPost(userId, description, images)
-//     } catch (err) {
-//         return err
-//     }
-// }
+    await createPost(userId, description, images)
+    } catch (err) {
+        return err
+    }
+}
 //get profile[]

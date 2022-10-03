@@ -4,7 +4,7 @@ dotenv.config()
 let {env} = process
 
 export const PORT = env.port || 4000
-export const JWTSECRET = env.jwtsecret || ""
+export const JWTSECRET = env.jwt_secret || ""
 export const CLOUD_NAME = env.jwtsecret || ""
 export const CLOUD_SECRET = env.jwtsecret || ""
 export const CLOUD_KEY = env.jwtsecret || ""

@@ -1,7 +1,7 @@
 
 import { Document, model, Types, Schema } from "mongoose";
 
-interface IPost{
+interface IPost extends Document{
     userId: {
         type: Types.ObjectId,
         ref: string
@@ -49,18 +49,21 @@ const postSchema = new Schema({
         },
         likedBy: [
             {
-                userId: Schema.Types.ObjectId,
-                ref: 'users',
-                required: true
+                userId: {
+                    type: Schema.Types.ObjectId,
+                    ref: "users"
+                }
             }
         ]
     },
     comments: [{
-        userId: Schema.Types.ObjectId,
-        Comment: String,
-        required: true
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: "users"
+        },
+        comment: String
     }]
-})
+}, {timestamps: true})
 
 const Post = model<IPost>("post", postSchema)
 

@@ -1,5 +1,5 @@
 import User from "./usermodel";
-// import Post from "../../models/post.model";
+import Post from "../../models/post.model";
 
 export async function createUser(payload: {[key: string]: any}) {
     return new User( payload ).save()
@@ -7,16 +7,16 @@ export async function createUser(payload: {[key: string]: any}) {
 }
 
 export async function findUser(payload: {[key: string]: any}) {
-    return await User.findOne(payload).select("-password")
+    return await User.findOne(payload)
 }
 
 //post
-// export async function createPost(userid: string, payload: {[key: string]: any}, images?: {imgUrl: string, imgId: string}[]) {
+export async function createPost(userid: string, payload: {[key: string]: any}, images?: {imgUrl: string, imgId: string}[]) {
 
-//     return new Post({
-//         userId: userid,
-//         payload,
-//         postImages: images
-//     }).save() ;
+    return new Post({
+        userId: userid,
+        description: payload,
+        postImages: images
+    }).save() ;
 
-// }
+}

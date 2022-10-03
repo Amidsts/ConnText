@@ -27,15 +27,22 @@ export function validator (schema: {[key: string]: any}, inputData: {[key:string
 }
 
 export function hashPassword (plainPassword: string) {
-  return bcrypt.compareSync( plainPassword, bcrypt.genSaltSync(10) )
+
+  return bcrypt.hashSync(plainPassword, bcrypt.genSaltSync(10))
+
 }
 
 export function comparePassword (hashedPassword: string, plainPassword: string) {
-  return bcrypt.compareSync( plainPassword, hashedPassword )
+
+ return bcrypt.compareSync(plainPassword, hashedPassword)
+ 
 }
 
 export function generateToken (payload: {[key: string]: any}) {
-  jwt.sign(payload, JWTSECRET, {expiresIn: 60*60*20})
+  
+  let options:jwt.SignOptions = {expiresIn: 60*60 }
+  return  jwt.sign(payload, JWTSECRET, options)
+
 }
 
 interface tokenPayload {
@@ -43,12 +50,16 @@ interface tokenPayload {
 }
 export function verifyToken (authToken: string) {
   const token = authToken.split(" ")[1]
-  return jwt.verify(token, JWTSECRET) as tokenPayload
-}
 
+  const decoded = jwt.verify(token, JWTSECRET) as tokenPayload
+  console.log(decoded)
+
+  return decoded
+}
+ 
 export function cloudinary (_req:Request, _res: Response, next:NextFunction) {
   v2.config({
-    cloud_name: CLOUD_NAME,
+    cloud_name: CLOUD_NAME, 
     cloud_secret: CLOUD_SECRET,
     cloud_key: CLOUD_KEY,
     secure: true
