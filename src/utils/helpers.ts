@@ -52,19 +52,19 @@ export function verifyToken (authToken: string) {
   const token = authToken.split(" ")[1]
 
   const decoded = jwt.verify(token, JWTSECRET) as tokenPayload
-  console.log(decoded)
 
   return decoded
 }
  
 export function cloudinary (_req:Request, _res: Response, next:NextFunction) {
+
   v2.config({
     cloud_name: CLOUD_NAME, 
-    cloud_secret: CLOUD_SECRET,
     cloud_key: CLOUD_KEY,
-    secure: true
-  })
-
+    cloud_secret: CLOUD_SECRET
+    
+ })
+console.log("connected to cloudinary")
   return next()
 }
 

@@ -5,15 +5,14 @@ import { verifyToken } from "../utils/helpers";
 import { IRequest } from "../helpers/custom.types";
 
 export async function validateUser (req: IRequest, _res:Response, next: NextFunction) {
-    
+
     const {authorization} = req.headers
 
     if (!authorization) throw new clientError("authorization token is required", 400)
 
     try {
         
-        const id = verifyToken(authorization)
-        console.log(id) 
+        const {id} = verifyToken(authorization)
         const user = await findUser({_id: id})
         
         if(!user) throw new clientError("user account not found" ,404)

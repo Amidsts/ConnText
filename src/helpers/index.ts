@@ -24,13 +24,12 @@ export default (app: Application ) => {
         logger.info(err)
     })
 
-    app.use("*", cloudinary)
-
     app.use(express.json())
         .use(express.urlencoded({extended: true}))
         .use(cors())
         .use(morgan("tiny"))
         .use(helmet())
+        .use("*", cloudinary)
         
     app.get("/",  (req: Request, res: Response) => {
         res.status(200).send("Hello world, here is a social medial chat application")

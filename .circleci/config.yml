@@ -1,2 +1,21 @@
 version: 2.1
- 
+jobs:
+  run_tests:
+    docker:
+      - image: cimg/node:18.9.1
+    steps:
+      - checkout
+      - run:
+          name: install npm dependency
+          command: |
+            npm install
+      - run:
+          name: Run unit test
+          command: |
+            npm run test
+      - store_test_Result:
+          path: test-Results
+workflow:
+  build_test:
+    jobs:
+      - run_tests
