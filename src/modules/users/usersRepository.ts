@@ -11,12 +11,12 @@ export async function findUser(payload: {[key: string]: any}) {
 }
 
 //post
-export async function createPost(userid: string, payload: {[key: string]: any}, images?: {imgUrl: string, imgId: string}[]) {
+export async function createPost(userid: string, payload: {[key: string]: any}, image?: {imgUrl: string, imgId: string}) {
 
     return new Post({
         userId: userid,
         description: payload,
-        postImages: images
+        postImages: [image]
     }).save() ;
 
 }

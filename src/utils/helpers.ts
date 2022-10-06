@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import {JwtPayload, sign, verify, SignOptions} from "jsonwebtoken"
 import {v2} from "cloudinary"
 import { 
   JWTSECRET,
@@ -40,31 +40,33 @@ export function comparePassword (hashedPassword: string, plainPassword: string) 
 
 export function generateToken (payload: {[key: string]: any}) {
   
-  let options:jwt.SignOptions = {expiresIn: 60*60 }
-  return  jwt.sign(payload, JWTSECRET, options)
+  let options: SignOptions = {expiresIn: 60*60 }
+
+ return  sign(payload, JWTSECRET, options)
 
 }
 
-interface tokenPayload {
-  id?:string
+interface tokenPayload extends JwtPayload{
+  id?:string 
 }
+
 export function verifyToken (authToken: string) {
   const token = authToken.split(" ")[1]
 
-  const decoded = jwt.verify(token, JWTSECRET) as tokenPayload
+    return verify(token, JWTSECRET) as tokenPayload
 
-  return decoded
 }
+
  
 export function cloudinary (_req:Request, _res: Response, next:NextFunction) {
 
   v2.config({
     cloud_name: CLOUD_NAME, 
-    cloud_key: CLOUD_KEY,
-    cloud_secret: CLOUD_SECRET
+    api_key: CLOUD_KEY,
+    api_secret: CLOUD_SECRET
     
  })
-console.log("connected to cloudinary")
+// console.log("connected to cloudinary")
   return next()
 }
 

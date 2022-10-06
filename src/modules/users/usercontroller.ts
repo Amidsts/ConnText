@@ -33,7 +33,7 @@ export async function loginUserController(req: Request, res:Response) {
 //post
 export async function createPostController(req: IRequest, res:Response) {
     try{
-        const response =await createPostService(req.user?._id, req.body, res.locals.imageArr)
+        const response =await createPostService(req.user?._id, req.body, res.locals.img)
 
         res.json(responsehandler(response))
     } catch (err) {

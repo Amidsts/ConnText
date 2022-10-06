@@ -16,6 +16,8 @@ const router = Router()
 router.post("/create-user", createUserController)
 router.post("/login-user", loginUserController)
 
-router.post("/create-post", validateUser, upload.array("image", 5), cloudinaryUpload, createPostController)
+//test
+
+router.post("/create-post", validateUser, upload.single("image"), cloudinaryUpload, createPostController) 
  
 export default router

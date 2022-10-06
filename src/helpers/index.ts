@@ -11,6 +11,7 @@ import {
 import usersRoute from "../modules/users/userRoutes"
 import { MONGO_URI } from "../utils/env"; 
 import { logger } from "./logger";
+import { validateUser } from "../middlewares/auth";
 
 const options = {
     useUnifiedTopology: true,
@@ -31,7 +32,8 @@ export default (app: Application ) => {
         .use(helmet())
         .use("*", cloudinary)
         
-    app.get("/",  (req: Request, res: Response) => {
+    app.get("/", (req: Request, res: Response) => {
+
         res.status(200).send("Hello world, here is a social medial chat application")
     })
     app.use("/v1/users", usersRoute)
