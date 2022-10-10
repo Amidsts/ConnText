@@ -30,9 +30,10 @@ export async function validateUser (req: IRequest, _res:Response, next: NextFunc
 
         if ( req.user.status === "suspended" || req.user.status === "inactive" ) throw new clientError( "account is in active or suspended" ,403)
 
+        return next()
     } catch (err) {
         return err
     }
 
-    next()
+    // next()
 }

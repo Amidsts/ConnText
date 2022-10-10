@@ -56,10 +56,10 @@ export async function loginUserService (payload: {[key: string]: any}) {
 
             throw new clientError("invalid email or password", 400)
         }
-        const token = generateToken({id: User._id})
+        // const token = generateToken({id: User._id})
         
         return {
-            accessToken : token,
+            accessToken : generateToken({id: User._id}),
             User
         }
     } catch (err) {
