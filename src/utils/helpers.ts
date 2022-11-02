@@ -47,7 +47,7 @@ export function generateToken (payload: {[key: string]: any}) {
 }
 
 interface tokenPayload extends JwtPayload{
-  id?:string 
+  id?:string
 }
 
 export function verifyToken (authToken: string) {

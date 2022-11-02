@@ -34,6 +34,7 @@ export function cloudinaryUpload (req: IRequest, res: Response, next: NextFuncti
 
     if (req.file) {
         const imgPath = req.file.path
+
         v2.uploader.upload(imgPath)
         .then( (uploadedImage) => {
 
@@ -41,7 +42,8 @@ export function cloudinaryUpload (req: IRequest, res: Response, next: NextFuncti
                imgUrl: uploadedImage.secure_url,
                imgId: uploadedImage.public_id
             }
-            fs.unlinkSync(imgPath)
+
+            fs.unlinkSync(imgPath) //remove file from upload folder
             return next()
         } )
         .catch( (error) => {

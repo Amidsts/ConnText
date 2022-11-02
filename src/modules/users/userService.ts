@@ -3,14 +3,13 @@ import {
     hashPassword, comparePassword, generateToken
 } from "../../utils/helpers"
 import {
-    createPost,
     createUser,
     findUser
 } from "./usersRepository"
 import {
-    createPostValidate,
     createUserValidator, loginUserValidator
 } from "./uservalidation"
+import mongoose from "mongoose"
 
 export async function createUserService(payload: {[key: string]: any}) {
     try {
@@ -24,8 +23,8 @@ export async function createUserService(payload: {[key: string]: any}) {
                 postalcode
             }
         } = createUserValidator(payload)
-
-        await createUser(
+console.log(password)
+       const newUser =  await createUser(
             {
                 username, email,
                 password: hashPassword(password), 
@@ -39,7 +38,8 @@ export async function createUserService(payload: {[key: string]: any}) {
                 }
             }
         )
-        return "user sign up successfully"
+        newUser.password = ""
+        return newUser
         
     } catch (err) {
         return err
@@ -70,17 +70,9 @@ export async function loginUserService (payload: {[key: string]: any}) {
 //reset password
 //change password
 //resend password verification code
+//upload profile pictures
 //online offline status of user using socket.io
-
-//create post
-export async function createPostService ( userId: string, payload: {[key: string]: any}, images?: {imgUrl: string, imgId: string}){
-    try {
-        
-        const {description} = createPostValidate(payload)
-
-    return await createPost(userId, description, images)
-    } catch (err) {
-        return err
-    }
-}
-//get profile[]
+//follow user
+//unfollow user
+//get followers
+//get followings

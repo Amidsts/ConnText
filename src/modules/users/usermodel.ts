@@ -2,7 +2,7 @@ import { string } from "joi"
 import { Schema, model, Types, Document } from "mongoose"
 
 export interface IUser extends Document {
-    isAdmin: boolean,
+    role: "admin" | "user",
     username: string,
     password: string,
     email: string,
@@ -27,9 +27,10 @@ export interface IUser extends Document {
 }
 
 const userSchema = new Schema({
-    isAdmin: {
-        type: Boolean,
-        default: false
+    role: {
+        type: String,
+        default: "user",
+        enum: ["admin", "user"]
     },
     username: {
         type: String,

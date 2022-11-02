@@ -9,6 +9,7 @@ import {
     cloudinary
 } from "../utils/helpers"
 import usersRoute from "../modules/users/userRoutes"
+import postRoute from "../modules/posts/post.routes"
 import { MONGO_URI } from "../utils/env"; 
 import { logger } from "./logger";
 import { validateUser } from "../middlewares/auth";
@@ -34,9 +35,10 @@ export default (app: Application ) => {
         
     app.get("/", (req: Request, res: Response) => {
 
-        res.status(200).send("Hello world, here is a social medial chat application")
+        res.status(200).send("Hello world, here is a social media chat application")
     })
     app.use("/v1/users", usersRoute)
+    app.use("/v1/posts", postRoute)
 }
 
 

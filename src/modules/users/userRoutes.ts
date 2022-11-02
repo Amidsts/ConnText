@@ -5,8 +5,7 @@ import { cloudinaryUpload } from "../../middlewares/custom"
 
 import {
     createUserController,
-    loginUserController,
-    createPostController
+    loginUserController
 } from "./usercontroller"
 import { upload } from "../../middlewares/custom"
 import { validateUser } from "../../middlewares/auth"
@@ -18,6 +17,6 @@ router.post("/login-user", loginUserController)
 
 //test
 
-router.post("/create-post", validateUser, upload.single("image"), cloudinaryUpload, createPostController) 
+
  
 export default router
