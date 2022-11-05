@@ -20,8 +20,9 @@ const options = {
 } as ConnectOptions
 
 export default (app: Application ) => {
-    connect(MONGO_URI, options).then( () => {
+    connect(MONGO_URI, options).then( (e) => {
         logger.info("connected to the database successfully")
+        
     }).catch((err) => {
         logger.info(err)
     })

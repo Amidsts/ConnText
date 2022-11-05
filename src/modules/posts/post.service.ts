@@ -10,6 +10,8 @@ import {
     serverError
 } from "../../utils/error"
 import { findUser } from "../users/usersRepository"
+import Post from "./post.model"
+import mongoose from "mongoose"
 
 
 
@@ -79,8 +81,40 @@ export async function deletepostService (postid: string, userId: string) {
 //     }
 // }
 
-//like post
-//unlike a post
+//like or unlike a post
+export async function likePostService (postId: string, userid:string) {
+    try {
+        const post = await getPost(postId)
+
+        if (!post) throw new clientError("post not found", 404)
+
+        //check if the person has liked the post
+        if ( post.likedBy?.includes(userid) ){
+            await post.update({
+                $inc: {
+                    likesCount: -1
+                },
+                $pull: {
+                    likedBy: userid
+                }
+            })
+        }
+        else {
+            await post.update({
+                $inc: {
+                    likesCount: 1
+                },
+                $push: {
+                    likedBy: userid
+                }
+            })
+        }
+
+        return await Post.findById(post._id)
+    } catch (err) {
+        return err
+    }
+}
 //comment on a post or create comment
 //delete comment
 //update comment

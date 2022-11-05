@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { responsehandler } from "../../utils/helpers";
 import { 
     createUserService, 
+    followUserService, 
     loginUserService 
 } from "./userService";
 import { upload } from "../../middlewares/custom";
@@ -30,3 +31,12 @@ export async function loginUserController(req: Request, res:Response) {
 }
 
 
+export async function followUserController (req: IRequest, res: Response) {
+    try{
+        const response = await followUserService(req.params.userId, req.user?._id)
+
+        res.status(200).json(responsehandler(response))
+    } catch (err) {
+        return err
+    }
+}

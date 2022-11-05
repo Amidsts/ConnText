@@ -5,7 +5,8 @@ import {
     createPostService,
     getpostService,
     getpostsService,
-    deletepostService 
+    deletepostService, 
+    likePostService
 } from "./post.service"
 import { responsehandler } from "../../utils/helpers"
 
@@ -46,6 +47,18 @@ export async function deletePostController (req: Request, res: Response) {
         const response = await deletepostService(req.params.postId, req.body.userId)
 
         res.status(200).json(responsehandler(response))
+    } catch (err) {
+        return err
+    }
+}
+
+export async function likePostController (req: IRequest, res: Response) {
+    try {
+        console.log(req.user?._id)
+        const response = await likePostService(req.params.postId, req.user?._id)
+
+        res.status(200).json(responsehandler(response))
+
     } catch (err) {
         return err
     }

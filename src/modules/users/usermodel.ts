@@ -14,14 +14,14 @@ export interface IUser extends Document {
         loacalGovt: string,
         postalcode: string 
     },
-    followers: {
+    followers: ({
         type: Types.ObjectId,
         ref: string
-    }[],
-    following: {
+    } | string)[],
+    following: ({
         type: Types.ObjectId,
         ref: string
-    }[],
+    } | string)[],
     profilePicture: string ,
     isOnline: boolean
 }
@@ -69,10 +69,18 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "users"
     }],
+    followersCount: {
+        type: Number,
+        default: 0
+    },
     followings: [{
         type: Schema.Types.ObjectId,
         ref: "users"
     }],
+    followingsCount: {
+        type: Number,
+        default: 0
+    },
     isOnline: {
         type: Boolean,
         default: false

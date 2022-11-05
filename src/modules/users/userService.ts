@@ -1,3 +1,5 @@
+import {ClientSession, startSession} from "mongoose"
+
 import { clientError } from "../../utils/error"
 import {
     hashPassword, comparePassword, generateToken
@@ -9,7 +11,7 @@ import {
 import {
     createUserValidator, loginUserValidator
 } from "./uservalidation"
-import mongoose from "mongoose"
+import User from "./usermodel"
 
 export async function createUserService(payload: {[key: string]: any}) {
     try {
@@ -29,7 +31,6 @@ console.log(password)
                 username, email,
                 password: hashPassword(password), 
                 phoneNo,
-                status: "active",
                 address: {
                     country,
                     state,
@@ -49,18 +50,22 @@ console.log(password)
 export async function loginUserService (payload: {[key: string]: any}) {
     try{
         const {email, password} = loginUserValidator(payload)
-        let User = await findUser({email})
+        // let user = await findUser({email})
 
-       
-        if (!User || !( comparePassword( User.password, password ) )) {
+        let user = await User.findOne({email})
+
+        if (!user || !( comparePassword( user.password, password ) )) {
 
             throw new clientError("invalid email or password", 400)
         }
         // const token = generateToken({id: User._id})
-        
+
+        user.status = "active"
+        await user.save()
+
         return {
-            accessToken : generateToken({id: User._id}),
-            User
+            accessToken : generateToken({id: user._id}),
+            user
         }
     } catch (err) {
         return err
@@ -72,7 +77,74 @@ export async function loginUserService (payload: {[key: string]: any}) {
 //resend password verification code
 //upload profile pictures
 //online offline status of user using socket.io
-//follow user
-//unfollow user
+
+//follow or unfollow user
+export async function followUserService (userId: string, followerId: string) {
+
+    const session:ClientSession = await startSession()
+    session.startTransaction()
+
+    try {
+
+        if ( userId === followerId.toString() ) throw new clientError("you cannot follow yourself", 401)
+
+        const user = await User.findById(userId)
+
+        const follower = await User.findById(followerId)
+
+        if (!user || user.status === "suspended" ||  user.status === "inactive" )
+            throw new clientError("user account not found or account has been suspended", 404)
+
+        //update user's follower
+        if ( !(user.followers.includes(followerId)) ) {
+            await user.updateOne({
+                $push: {
+                    followers: followerId
+                },
+                $inc: {
+                    followersCount: 1
+                }
+            }, { session })
+
+            await follower?.updateOne({
+                $push:{
+                    followings: userId
+                },
+                $inc: {
+                    followingsCount: 1
+                }
+            }, { session })
+
+            await session.commitTransaction()
+        } else{
+            await user.update({
+                $pull: {
+                    followers: followerId
+                },
+                $inc: {
+                    followersCount: -1
+                }
+            }, { session })
+
+            await follower?.update({
+                $pull: {
+                    followings: userId
+                },
+                $inc: {
+                    followingsCount: -1
+                }
+            }, { session })
+        }
+
+        return await User.findById(userId)
+    } catch (err) {
+
+        await session.abortTransaction()
+
+        return err
+    } finally {
+        await session.endSession()
+    }
+}
 //get followers
 //get followings

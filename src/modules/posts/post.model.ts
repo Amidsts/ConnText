@@ -11,15 +11,11 @@ interface IPost extends Document{
         imgId: string
     }[],
     description: string,
-    likes?: {
-        likesCount: number,
-        likedBy: {
-            userId: {
-                type: Types.ObjectId,
-                ref: string
-            }
-        }[]
-    },
+    likesCount?: number,
+    likedBy?: ({
+            type: Types.ObjectId,
+            ref: string
+    } | string)[],
     comments?: {
         userId:  {
             type: Types.ObjectId,
@@ -48,12 +44,11 @@ const postSchema = new Schema({
         default: 0
     },
     likedBy: [
-        {
-            userId: {
+            {
+
                 type: Schema.Types.ObjectId,
                 ref: "users"
             }
-        }
     ],  
     comments: [{
         user: {
