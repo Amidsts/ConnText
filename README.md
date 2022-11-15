@@ -10,3 +10,5 @@ This application is a social media chat application, where users can upload post
 4. socket.io
 5. cloudinary
 6. mongoDB
+
+## STATUS: IN PROGRESS
