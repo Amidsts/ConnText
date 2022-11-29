@@ -4,6 +4,7 @@ import cors from "cors"
 import morgan from "morgan";
 import helmet from "helmet";
 import {connect, ConnectOptions} from "mongoose"
+import path from "path"
 
 import {
     cloudinary
@@ -12,7 +13,8 @@ import usersRoute from "../modules/users/userRoutes"
 import postRoute from "../modules/posts/post.routes"
 import { MONGO_URI } from "../utils/env"; 
 import { logger } from "./logger";
-import { validateUser } from "../middlewares/auth";
+import { Socket } from "socket.io";
+
 
 const options = {
     useUnifiedTopology: true,
@@ -26,6 +28,8 @@ export default (app: Application ) => {
     }).catch((err) => {
         logger.info(err)
     })
+    
+    app.use(express.static(path.resolve(__dirname, "..",'public')))
 
     app.use(express.json())
         .use(express.urlencoded({extended: true}))
@@ -33,6 +37,24 @@ export default (app: Application ) => {
         .use(morgan("tiny"))
         .use(helmet())
         .use("*", cloudinary)
+        
+        let http = require("http").Server(app)
+        let io = require("socket.io")(http)
+
+        let user = ["Ameedat", "Balqees"]
+
+        app.get("/try", (req: Request, res: Response) => {
+
+            res.sendFile(path.resolve(__dirname, "..",'public/index.html'))
+
+            io.on("connection", function(socket: Socket) {
+                console.log("user connected!")
+
+                socket.on("setUsername", function(data: string) {
+
+                })
+            })
+        })
         
     app.get("/", (req: Request, res: Response) => {
 
