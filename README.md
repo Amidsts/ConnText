@@ -1,4 +1,4 @@
-# SOCIO-CHAT APPLICATION
+# ConnText
 
 This application is a social media chat application, where users can upload posts, send direct message to each other, follow each other and users can comment on posts
 
