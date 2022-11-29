@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const custom_1 = require("../../middlewares/custom");
+const auth_1 = require("../../middlewares/auth");
+const custom_2 = require("../../middlewares/custom");
+const post_controller_1 = require("./post.controller");
+const router = (0, express_1.Router)();
+router.post("/create-post", (0, auth_1.validateUser)(["user"]), custom_2.upload.single("image"), custom_1.cloudinaryUpload, post_controller_1.createPostController);
+router.get("/get-post/:postId", (0, auth_1.validateUser)(["user"]), post_controller_1.getPostController);
+router.get("/get-posts", (0, auth_1.validateUser)(["user"]), post_controller_1.getpostsController);
+router.delete("/delete-post/:postId", (0, auth_1.validateUser)(["user"]), post_controller_1.deletePostController);
+router.put("/like-post/:postId", (0, auth_1.validateUser)(["user"]), post_controller_1.likePostController);
+exports.default = router;
