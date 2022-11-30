@@ -30,3 +30,10 @@ export const loginUserValidator = (payload: {[key: string]: any}) => {
     , payload )
 }
 
+export const forgotPasswordMailValidator = (payload: {[key: string]: any}) => {
+    return validator( Joi.object({
+        email: Joi.string().trim().required()
+    }),
+    payload)
+}
+ 

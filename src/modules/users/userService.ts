@@ -1,4 +1,5 @@
 import {ClientSession, startSession} from "mongoose"
+import {Request} from "express"
 
 import { clientError } from "../../utils/error"
 import {
@@ -9,9 +10,11 @@ import {
     findUser
 } from "./usersRepository"
 import {
-    createUserValidator, loginUserValidator
+    createUserValidator, forgotPasswordMailValidator, loginUserValidator
 } from "./uservalidation"
 import User from "./usermodel"
+import { HOST } from "../../utils/env"
+import { sendMail } from "../../utils/mail"
 
 export async function createUserService(payload: {[key: string]: any}) {
     try {
@@ -71,7 +74,35 @@ export async function loginUserService (payload: {[key: string]: any}) {
         return err
     }
 }
+
 //forgot password
+export async function forgotPassword (userId: string, payload: {[key : string]: any}, requestHandler: Request) {
+    try {
+        const {email} = forgotPasswordMailValidator(payload)
+
+        const user  = await User.findOne({email})
+
+        if (!user) throw new clientError("user account does not exist", 404)
+
+        //https://conntext.onrender.com/v1/users/reset-password
+
+        //send a mail
+        const passwrdResetUrl= `${requestHandler.protocol}://${HOST}/v1/users/reset-password`
+
+        sendMail({
+            Email: email,
+            subject: "Reset Your ConnText Password",
+            message: `<b>Forgot your password ?</b> \n <p>Someone Requested to reset your password for ConnText account, Follow the link below to reset your password</p> <a href=\"${passwrdResetUrl}\">\"${passwrdResetUrl}\"</a> \n <p>I this mail is not triggered not you, disregard this mail</p>`
+        })
+
+        return {
+            message: "forgot password mail is sent, check your mail"
+        }
+
+    } catch (err) {
+        return err
+    }
+}
 //reset password
 //change password
 //resend password verification code
