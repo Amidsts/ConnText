@@ -45,7 +45,7 @@ export async function createUserService(payload: {[key: string]: any}) {
         newUser.save()
 
         newUser.password = ""
-        newUser.verificationCode = ""
+        // newUser.verificationCode = ""
 
         return{
             newUser,
@@ -81,7 +81,12 @@ export async function loginUserService (payload: {[key: string]: any}) {
         }
         // const token = generateToken({id: User._id})
 
-        user.status = "active"
+        if (user.status !== "active") {
+            user.status = "active"
+        }
+        
+        user.isOnline = true
+
         await user.save()
 
         return {
