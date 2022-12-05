@@ -8,22 +8,23 @@ export interface IUser extends Document {
     email: string,
     phoneNo: string,
     status: "active" | "inactive" | "suspended",
-    address: {
+    address?: {
         country: string,
         state: string,
         loacalGovt: string,
         postalcode: string 
     },
-    followers: ({
+    followers?: ({
         type: Types.ObjectId,
         ref: string
     } | string)[],
-    following: ({
+    following?: ({
         type: Types.ObjectId,
         ref: string
     } | string)[],
-    profilePicture: string ,
-    isOnline: boolean
+    profilePicture?: string ,
+    isOnline: boolean,
+    verificationCode: string
 }
 
 const userSchema = new Schema({
@@ -56,8 +57,8 @@ const userSchema = new Schema({
         default: "inactive"
     },
     profilePicture: {
-        imageUrl: String,
-        imageId: String
+        imgUrl: String,
+        imgId: String
     },
     address: {
         country: String,
@@ -84,6 +85,10 @@ const userSchema = new Schema({
     isOnline: {
         type: Boolean,
         default: false
+    },
+    verificationCode: {
+        type: String,
+        required: true
     }
 }, {timestamps: true} )
 

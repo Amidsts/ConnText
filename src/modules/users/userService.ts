@@ -1,16 +1,17 @@
 import {ClientSession, startSession} from "mongoose"
 import {Request} from "express"
 
-import { clientError } from "../../utils/error"
+import { clientError, serverError } from "../../utils/error"
 import {
-    hashPassword, comparePassword, generateToken
+    hashPassword, comparePassword, generateToken, generateCode
 } from "../../utils/helpers"
 import {
     createUser,
     findUser
 } from "./usersRepository"
 import {
-    createUserValidator, forgotPasswordMailValidator, loginUserValidator
+    changePasswordValidator,
+    createUserValidator, forgotPasswordMailValidator, loginUserValidator, resetPasswordValidator, verificationCodeValidator
 } from "./uservalidation"
 import User from "./usermodel"
 import { HOST } from "../../utils/env"
@@ -21,39 +22,54 @@ export async function createUserService(payload: {[key: string]: any}) {
         const {
             username, email,
             password, phoneNo,
-            address: {
-                country,
-                state,
-                localGovt,
-                postalcode
-            }
+
         } = createUserValidator(payload)
-console.log(password)
-       const newUser =  await createUser(
-            {
-                username, email,
-                password: hashPassword(password), 
-                phoneNo,
-                address: {
-                    country,
-                    state,
-                    localGovt,
-                    postalcode
-                }
-            }
-        )
+
+        console.log("new user password", password)
+
+       const newUser =  await new User({
+            username, email,
+            password: hashPassword(password), 
+            phoneNo
+       })
+
+        let signUptoken = generateCode()
+
+        await sendMail({
+            Email: newUser.email,
+            subJect: "ConnText sign Up verification code",
+            message: `<p>Hi ${newUser.username}, Welcome to ConnText.</p> <p>Here is your sign up verification code ${signUptoken}</p>`
+        })
+
+        newUser.save()
+        newUser.verificationCode = signUptoken
         newUser.password = ""
-        return newUser
+
+        return{
+            userId: newUser._id,
+            message: "sign up token sent has been to your email!"
+        }
         
     } catch (err) {
         return err
     }
 }
 
+export async function VerificationCodeService (id: string, payload: {[key: string]: any}) {
+    const {verificationCode} = verificationCodeValidator(payload)
+
+    const user = await User.findById(id)
+
+    if (!user) throw new clientError("user account does not exist", 404)
+
+    if (user.verificationCode !== verificationCode) throw new clientError("invalid verification code", 406)
+
+    return "success"
+}
+
 export async function loginUserService (payload: {[key: string]: any}) {
     try{
         const {email, password} = loginUserValidator(payload)
-        // let user = await findUser({email})
 
         let user = await User.findOne({email})
 
@@ -76,7 +92,7 @@ export async function loginUserService (payload: {[key: string]: any}) {
 }
 
 //forgot password
-export async function forgotPassword (userId: string, payload: {[key : string]: any}, requestHandler: Request) {
+export async function forgotPasswordService ( payload: {[key : string]: any}, requestHandler: Request) {
     try {
         const {email} = forgotPasswordMailValidator(payload)
 
@@ -103,10 +119,73 @@ export async function forgotPassword (userId: string, payload: {[key : string]: 
         return err
     }
 }
+
 //reset password
+export async function resetPasswordService (id: string, payload: {[key: string]: any}) {
+    try{
+        const {newPassword, confirm_password} = resetPasswordValidator(payload)
+
+        const user = await User.findById(id)
+        if (!user) throw new clientError("internal server error", 500)
+
+        await user.updateOne({
+            password: hashPassword(confirm_password)
+        })
+
+        return {
+            message: "password updated successfully"
+        }
+    } catch (err) {
+        return err
+    }
+}
+
 //change password
-//resend password verification code
+export async function changePasswordServices(id: string, payload: {[key: string]: any}) {
+    try{
+        const {old_password, newPassword, confirm_password} = changePasswordValidator(payload)
+
+        const user = await User.findById(id)
+        if (!user) throw new clientError("internal server error", 500)
+
+        const compare_password = comparePassword(user.password, old_password)
+
+        if (!compare_password) throw new clientError("wrong passowrd", 406)
+
+        await user.updateOne({
+            password: hashPassword(confirm_password)
+        })
+
+        return {
+            message: "password updated successfully"
+        }
+    } catch (err) {
+        return err
+    }
+}
+
 //upload profile pictures
+export async function uploadProfileImgServices (
+    userId: string, 
+    images: {
+        imgUrl: string,
+        imgId: string
+     }) {
+    try {
+
+        const user = await User.findById(userId)
+        if (!user) throw new clientError("internal server error", 500)
+
+        await user.updateOne({
+            profilePicture: images
+        })
+
+        return "profile picture uploaded successfully"
+    } catch (err) {
+        return err
+    }
+}
+//resend password verification code
 //online offline status of user using socket.io
 
 //follow or unfollow user
@@ -127,7 +206,7 @@ export async function followUserService (userId: string, followerId: string) {
             throw new clientError("user account not found or account has been suspended", 404)
 
         //update user's follower
-        if ( !(user.followers.includes(followerId)) ) {
+        if ( !(user.followers?.includes(followerId)) ) {
             await user.updateOne({
                 $push: {
                     followers: followerId

@@ -3,6 +3,7 @@ import {
     CONNTEXT_USERNAME,
     CONNTEXT_PASSWRD
 } from "./env"
+import { serverError } from "./error"
 
 export const sendMail = async (options: {[key: string]: any}) => {
     const transporter = nodemailer.createTransport({
@@ -21,5 +22,10 @@ export const sendMail = async (options: {[key: string]: any}) => {
         html: options.message
     }
 
-    await transporter.sendMail(mailInfos)
+    try {
+       return await transporter.sendMail(mailInfos)
+       
+    } catch (err) {
+        return err
+    }
 }

@@ -70,3 +70,8 @@ export function cloudinary (_req:Request, _res: Response, next:NextFunction) {
   return next()
 }
 
+export function generateCode () {
+  const code = Math.floor( (Math.random() * 100000) + 100000 )
+
+  return code.toString()
+}
