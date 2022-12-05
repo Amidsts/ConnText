@@ -40,13 +40,15 @@ export async function createUserService(payload: {[key: string]: any}) {
             subJect: "ConnText sign Up verification code",
             message: `<p>Hi ${newUser.username}, Welcome to ConnText.</p> <p>Here is your sign up verification code ${signUptoken}</p>`
         })
-
-        newUser.save()
+        
         newUser.verificationCode = signUptoken
+        newUser.save()
+
         newUser.password = ""
+        newUser.verificationCode = ""
 
         return{
-            userId: newUser._id,
+            newUser,
             message: "sign up token sent has been to your email!"
         }
         

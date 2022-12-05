@@ -19,7 +19,7 @@ import { validateUser } from "../../middlewares/auth"
 const router = Router()
 
 router.post("/create-user", createUserController)
-router.post("/verification-code", verificationCodeController)
+router.post("/verification-code/:userId", verificationCodeController)
 router.post("/login-user", loginUserController)
 
 router.post("/forgot-password", forgotPasswordController)
