@@ -101,6 +101,7 @@ export async function loginUserService (payload: {[key: string]: any}) {
 }
 
 //forgot password
+//add rate limit to the endpoint
 export async function forgotPasswordService ( payload: {[key : string]: any}, requestHandler: Request) {
     try {
         const {email} = forgotPasswordMailValidator(payload)
