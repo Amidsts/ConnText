@@ -79,6 +79,8 @@ export async function loginUserService (payload: {[key: string]: any}) {
 
             throw new clientError("invalid email or password", 400)
         }
+
+        if (user.verificationCode === "") throw new clientError("verification code is not supplied", 406)
         // const token = generateToken({id: User._id})
 
         if (user.status !== "active") {
@@ -110,7 +112,7 @@ export async function forgotPasswordService ( payload: {[key : string]: any}, re
         //https://conntext.onrender.com/v1/users/reset-password
 
         //send a mail
-        const passwrdResetUrl= `${requestHandler.protocol}://${HOST}/v1/users/reset-password`
+        const passwrdResetUrl= `${HOST}/v1/users/reset-password/${user._id}`
 
         sendMail({
             Email: email,
