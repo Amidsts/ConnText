@@ -42,7 +42,7 @@ export async function createUserService(payload: {[key: string]: any}) {
         })
         
         newUser.verificationCode = signUptoken
-        newUser.save()
+        await newUser.save()
 
         newUser.password = ""
         // newUser.verificationCode = ""
