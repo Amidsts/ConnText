@@ -1,7 +1,7 @@
 import { Router } from "express"
 import path from "path"
 
-import { cloudinaryUpload } from "../../middlewares/custom"
+import { cloudinaryUpload, upload } from "../../middlewares/custom"
 
 import {
     changePasswordController,
@@ -26,7 +26,7 @@ router.post("/forgot-password", forgotPasswordController)
 router.put("/reset-password/:userId", resetPasswordController)
 router.put("/change-password", validateUser(["user", "admin"]), changePasswordController)
 
-router.put("/upload-profile-picture", validateUser(["user", "admin"]), uploadProfileImgController)
+router.put("/upload-profile-picture", validateUser(["user", "admin"]), upload.single("img"), cloudinaryUpload, uploadProfileImgController)
 
 router.put("/follow-unfollow-user/:userId",  validateUser(["user"]), followUserController)
 

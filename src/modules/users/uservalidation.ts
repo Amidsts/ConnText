@@ -23,7 +23,7 @@ export const createUserValidator = (payload: {[key: string]: any}) => {
 
 export const verificationCodeValidator = (payload: {[key: string]: any}) => {
     return validator( Joi.object({
-        verificationCode: Joi.string().required()
+        verificationCode: Joi.string().length(6).required()
     })
     , payload )
 }
