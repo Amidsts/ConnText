@@ -1,4 +1,4 @@
-import {Schema, Document, Types} from "mongoose"
+import {Schema, Document, Types, model} from "mongoose"
 
 export interface IMessage extends Document{
     senderId: {
@@ -37,4 +37,8 @@ const messageSchema = new Schema({
         type: String,
         required: true
     }
-})
+}, {timestamps: true})
+
+const Message = model("message", messageSchema)
+
+export default Message
