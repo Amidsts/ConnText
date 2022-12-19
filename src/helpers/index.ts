@@ -16,10 +16,29 @@ import { logger } from "./logger";
 
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+})
 
+io.on("connection", (socket) => {
+    logger.info("a user is conected")
+    socket.on("join", (data)=> {
+        logger.info(data)
+    })
+    socket.emit("server join", "hello from server")
     
-    require("../config/db")
+    socket.on("chat message", (msg) => {
+        logger.info("message", msg)
+    })
+    socket.on("disconnected", () => {
+        logger.info("a user disconected")
+    })
+})
+    console.log("hello")
+    // require("../config/db")
 
     app.use(express.static(path.resolve(__dirname, "..",'public')))
 
@@ -29,39 +48,7 @@ const io = new Server(server)
         .use(morgan("tiny"))
         .use(helmet())
         .use("*", cloudinary)
-        
-        io.on("connection", (socket) => {
-            // logger.info("a user is conected")
-            socket.on("join", (data)=> {
-                logger.info(data)
-            })
-            socket.emit("server join", "hello from server")
-            
-            socket.on("chat message", (msg) => {
-                logger.info("message", msg)
-            })
-            // socket.on("disconnected", () => {
-            //     logger.info("a user disconected")
-            // })
-        })
 
-        // let http = require("http").Server(app)
-        // let io = require("socket.io")(http)
-
-
-        // app.get("/try", (req: Request, res: Response) => {
-
-        //     res.sendFile(path.resolve(__dirname, "..",'public/index.html'))
-
-        //     io.on("connection", function(socket: Socket) {
-        //         console.log("user connected!")
-
-        //         socket.on("setUsername", function(data: string) {
-
-        //         })
-        //     })
-        // })
-        
     app.get("/", (req: Request, res: Response) => {
 
         res.status(200).send("Hello world, welcome to ConnText. It is a social media chat application")

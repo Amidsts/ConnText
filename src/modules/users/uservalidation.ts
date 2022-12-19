@@ -50,6 +50,7 @@ export const resetPasswordValidator = (payload: {[key: string]: any}) => {
         confirm_password: Joi.ref("newPassword")
     }),
     payload)
+
 } 
 
 export const changePasswordValidator = (payload: {[key: string]: any}) => {

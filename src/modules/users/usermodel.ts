@@ -95,3 +95,7 @@ const userSchema = new Schema({
 const User = model<IUser>("user", userSchema)
 
 export default User
+
+/**
+ * 
+ */

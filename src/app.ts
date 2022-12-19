@@ -1,4 +1,3 @@
-import express, { Application } from "express"
 import { logger } from "./helpers/logger"
 import server from "./helpers/index"
 import {PORT} from "./utils/env"

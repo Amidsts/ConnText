@@ -83,7 +83,9 @@ export async function loginUserService (payload: {[key: string]: any}) {
         if (user.verificationCode === "") throw new clientError("verification code is not supplied", 406)
         // const token = generateToken({id: User._id})
 
-        if (user.status !== "active") {
+        if (user.status === "suspended") throw new clientError("account has been suspended", 401)
+
+        if (user.status === "inactive") {
             user.status = "active"
         }
         
