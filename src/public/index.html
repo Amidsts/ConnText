@@ -18,31 +18,12 @@
   <body>
     <h1>Welcome to ConnText! let's network</h1>
     <ul id="messages"></ul>
-    <form id="form" action="POST">
+    <form id="form">
       <input id="input" autocomplete="off" /><button>Send</button>
     </form>
 
-    <script src="/jquery/dist/jquery.js"></script>
+    <!-- <script src="/jquery/dist/jquery.js"></script> -->
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        let socket = io("http://10.1.220.19:4000");
-
-        let form = document.getElementById('form');
-        let input = document.getElementById('input');
-
-        socket.emit("join", "hello from client")
-        socket.on("server join", (msg) => {
-          alert (msg)
-        }) 
-        
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            if (input.value) {
-                socket.emit('chat message', input.value);
-                input.value = '';
-            }
-        })
-    </script>
+    <script src="./main.js"></script>
   </body>
 </html>

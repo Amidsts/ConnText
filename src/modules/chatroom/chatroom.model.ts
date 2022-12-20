@@ -7,27 +7,38 @@ export interface IChatroom extends Document {
         type: Types.ObjectId,
         ref: string
     },
-    chatRoomName: string,
+    chatRoomName?: string,
     roomMembersIds: {
         type: Types.ObjectId,
         ref: string
-    }[]
+    }[],
+    roomType: "biDirectional" | "group",
+    message: string,
+    roomDiscription?: string
 }
 
 const chatRoomSchema = new Schema({
-    chatRoomAdminId: {
+    chatInitiatorId: {
         type: Schema.Types.ObjectId,
         ref: "user"
     },
-    chatRoomName: {
-        type: String,
-        required: true
-    },
+    chatRoomName: String,
     roomMembersIds: [{
         type: Schema.Types.ObjectId,
         ref: "user",
         required: true
-    }]
+    }],
+    roomType: {
+        type: String,
+        enum: [ "biDirectional", "group" ]
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    roomDiscription: {
+        type: String
+    }
 }, {
     timestamps: true
 })
