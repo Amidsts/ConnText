@@ -19,9 +19,7 @@ const server = http.createServer(app)
 const io = new Server(server)
 
 
-io.on("connection", socketIo)
-    console.log("hello")
-    // require("../config/db")
+    require("../config/db")
 
     app.use(express.static(path.resolve(__dirname, "..",'public')))
 
@@ -32,15 +30,17 @@ io.on("connection", socketIo)
         .use(helmet())
         .use("*", cloudinary)
 
-    // app.get("/", (req: Request, res: Response) => {
+    app.get("/welcome", (req: Request, res: Response) => {
 
-    //     res.status(200).sendFile( path.resolve(__dirname, "..",'public') )
+        res.status(200).sendFile( path.resolve(__dirname, "..",'public') )
 
-    //     // res.status(200).send("Hello world, welcome to ConnText. It is a social media chat application")
-    // })
+        res.status(200).send("Hello world, welcome to ConnText. It is a social media chat application")
+    })
 
     app.use("/v1/users", usersRoute)
         .use("/v1/posts", postRoute)
+
+        io.on("connection", socketIo)
 
 export default server
 
